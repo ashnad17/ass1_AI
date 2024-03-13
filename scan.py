@@ -6,6 +6,8 @@
 import numpy as np
 import sys
 
+from graph_class import Graph
+
 def main():
     code = ".123456789abc"
     nrow, ncol, map = scan_map()
@@ -15,39 +17,47 @@ def main():
             print(code[map[r][c]],end="")
         print()
     print(map)
+    print("hereeeee")
     bridges = get_all_possible_bridges(map)
+    print("these are the bridgesssssss")
     islands = get_islands(map)
-    graph = build_graph(map, bridges)
+    # adjacency list of all islands with all bridges
+    whole_graph = Graph(map, bridges, islands, empty = False)
+    # empty graph to add nodes to
+    solution = Graph(map, bridges, islands, empty = True)
+
+
+    check_corners(whole_graph, map, solution)
     # solve_hashi(bridges, map)
 
-def build_graph(map, bridges, islands):
-    grapgh = []
-    for island in islands:
-        all_bridges = get_bridges_with_island
 
 def get_islands(map):
     islands = []
     for index, row in enumerate(map):
-        print(row)
         for index2, island in enumerate(row):
-            print(island)
             if island != 0:
-                print("appends")
-                islands.append({'row': index, 'col': index2, 'bridges': island})
+                islands.append({'coordinates': (index, index2), 'bridges': island})
     return islands
             
 def solve_hashi(bridges, map):
     # check corners
     check_corners(bridges, map)
 
-def check_corners(bridges, map):
+def check_corners(graph, map, solution):
     if map[0][0] == 6:
-        for single_bridge in (bridge for bridge in bridges if (bridge["col"] == 0  or bridge['row'] == 0 and bridge['starts_at'] == 0)):
-            index = bridges.index(single_bridge)
-            replace = single_bridge['possible_lengths'] 
+        solution.add_edge("down", 3, (0,0))
+        solution.add_edge("right", 3, (0,0))
+    if map[len(map) - 1][0] == 6:
+        solution.add_edge("up", 3, (0,0))
+        solution.add_edge("right", 3, (0,0))
+    if map[0][len(map[0]) -1] == 6:
+        solution.add_edge("down", 3, (0,0))
+        solution.add_edge("left", 3, (0,0))
+    if map[len(map) -1][len(map[0]) -1] == 6:
+        solution.add_edge("up", 3, (0,0))
+        solution.add_edge("left", 3, (0,0))
     # if map[len(map) -1][0] == 6 or map[0][len(map) -1] or map[len(map) -1][len(map) -1]:
         
-
 
 def get_all_possible_bridges(map):
     horiz_bridges =[]
@@ -70,9 +80,8 @@ def get_all_possible_bridges(map):
                     break
                 bridge_len += 1
             if bridge_found:
-                horiz_bridges.append({'row': row_index, 'starts_at': index, 'ends_at': index + bridge_len, 'possible_lengths': [0,1,2,3]})
+                horiz_bridges.append({'starts_at': (row_index, index), 'ends_at': (row_index, index + bridge_len), 'possible_lengths': [0,1,2,3], 'direction': "horiz" })
                 # maybe a list with all four cardianl bridges for each island
-    print(horiz_bridges)
     vert_bridges = []
     for col_index in range(len(map[0])):
         for index, row in enumerate(map):
@@ -91,9 +100,9 @@ def get_all_possible_bridges(map):
                     break
                 bridge_len += 1
             if bridge_found:
-                vert_bridges.append({'col': col_index, 'starts_at': index, 'ends_at': index + bridge_len, 'possible_lengths': [0,1,2,3]})
+                vert_bridges.append({ 'starts_at': (index, col_index), 'ends_at': (index + bridge_len, col_index), 'possible_lengths': [0,1,2,3], 'direction': "vert"})
                 # maybe a list with all four cardianl bridges for each island
-    print(vert_bridges)
+    print(horiz_bridges + vert_bridges)
     return horiz_bridges + vert_bridges
             
         
