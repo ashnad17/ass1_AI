@@ -23,7 +23,6 @@ class Graph:
                     simple_list.append((bridge['starts_at'], bridge['ends_at']))
             elif direction == "down":
                 if bridge['direction'] == 'vert' and bridge['starts_at'] == island:
-                    print("found bridge")
                     simple_list.append((bridge['starts_at'], bridge['ends_at']))
             elif direction == "right":
                 if bridge['direction'] == 'horiz' and bridge['starts_at'] == island:
@@ -45,8 +44,8 @@ class Graph:
         return False
 
 def get_bridges_with_island(island, bridges):
-    print(island)
-    print(bridges)
+    # print(island)
+    # print(bridges)
     matching_bridges =[]
     for bridge in bridges:
         if bridge['starts_at'] == island or bridge['ends_at'] == island:
